@@ -1,0 +1,9 @@
+<resources>
+
+    <dimen name="app_margin">16dp</dimen>
+    <dimen name="app_spacing">10dp</dimen>
+
+    <dimen name="app_line">1dp</dimen>
+    <dimen name="app_line_extreme_small">1px</dimen>
+
+</resources>

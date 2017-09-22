@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">TODO</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <!-- main -->
+    <string name="main_navTitle">TO-DOs</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- action -->
+    <string name="action_list">TO-DO List</string>
+    <string name="action_statistics">Statistics</string>
+    <string name="action_filter">Filter</string>
+    <string name="action_clear">Clear completed</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_add">Add</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- task -->
+    <string name="task_noTask">You have no TO-DOs!</string>
+
+    <!-- statistics -->
+    <string name="statistics_title">Hello statistics fragment</string>
+
 </resources>

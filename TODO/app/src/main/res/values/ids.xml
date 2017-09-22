@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="mToolbar" type="id" />
+    <item name="mContent" type="id" />
+    <item name="mRecyclerView" type="id" />
+    <item name="mStatusView" type="id" />
+    <item name="mStatusTitleView" type="id" />
+    <item name="mStatusIconView" type="id" />
+</resources>
