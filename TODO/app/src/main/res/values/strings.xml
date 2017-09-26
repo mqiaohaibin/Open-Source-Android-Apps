@@ -23,4 +23,7 @@
     <!-- statistics -->
     <string name="statistics_title">Hello statistics fragment</string>
 
+    <!-- error -->
+    <string name="error_getData">fail to get data</string>
+
 </resources>

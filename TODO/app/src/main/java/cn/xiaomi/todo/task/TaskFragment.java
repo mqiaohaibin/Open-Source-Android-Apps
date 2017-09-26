@@ -2,29 +2,29 @@ package cn.xiaomi.todo.task;
 
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
+import cn.xiaomi.library.BaseAdapter;
 import cn.xiaomi.library.LineItemDecoration;
-import cn.xiaomi.library.SpacingItemDecoration;
 import cn.xiaomi.todo.R;
 import cn.xiaomi.todo.main.MainActivity;
 import cn.xiaomi.todo.model.task.Task;
@@ -33,7 +33,7 @@ import cn.xiaomi.todo.model.task.Task;
  * A simple {@link Fragment} subclass.
  */
 public class TaskFragment extends Fragment implements TaskContract.View, View.OnClickListener
-        , SwipeRefreshLayout.OnRefreshListener {
+        , SwipeRefreshLayout.OnRefreshListener, BaseAdapter.OnItemClickListener {
 
     private static final String TAG = "TaskFragment";
 
@@ -53,8 +53,6 @@ public class TaskFragment extends Fragment implements TaskContract.View, View.On
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-
-        mTaskAdapter = new TaskAdapter(null);
     }
 
     @Override
@@ -65,8 +63,11 @@ public class TaskFragment extends Fragment implements TaskContract.View, View.On
 
         mRecyclerView = (RecyclerView) mRefreshLayout.findViewById(R.id.mRecyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        int spacing = getResources().getDimensionPixelSize(R.dimen.app_line);
+        mRecyclerView.addItemDecoration(new LineItemDecoration(spacing, 1));
+        mTaskAdapter = new TaskAdapter(null, this);
         mRecyclerView.setAdapter(mTaskAdapter);
-        mRecyclerView.addItemDecoration(new LineItemDecoration(getResources().getDimensionPixelSize(R.dimen.app_line), 1));
+
         mStatusView = mRefreshLayout.findViewById(R.id.mStatusView);
         mStatusIconView = (ImageView) mStatusView.findViewById(R.id.mStatusIconView);
         mStatusTitleView = (TextView) mStatusView.findViewById(R.id.mStatusTitleView);
@@ -98,17 +99,53 @@ public class TaskFragment extends Fragment implements TaskContract.View, View.On
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add:
+                //TODO action click to add a new task
+                return true;
+            case R.id.action_filter:
+                PopupMenu popupMenu = new PopupMenu(getContext(),
+                        getActivity().findViewById(R.id.action_filter));
+                popupMenu.getMenuInflater().inflate(R.menu.actions_filter_task, popupMenu.getMenu());
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_filter_active:
+                                mPresenter.filter(TaskContract.Presenter.FILTER_TYPE_ACTIVATE);
+                                return true;
+                            case R.id.action_filter_completed:
+                                mPresenter.filter(TaskContract.Presenter.FILTER_TYPE_COMPLETED);
+                                return true;
+
+                        }
+                        mPresenter.filter(TaskContract.Presenter.FILTER_TYPE_ALL);
+                        return true;
+                    }
+                });
+                popupMenu.show();
+                return true;
+            case R.id.action_clear:
+                mPresenter.clearCompletedTask();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.actionButton:
-
+                //TODO action click to add a new task
                 break;
         }
     }
 
     @Override
     public Context getContext() {
-        return getActivity();
+        return super.getContext();
     }
 
     @Override
@@ -117,42 +154,54 @@ public class TaskFragment extends Fragment implements TaskContract.View, View.On
     }
 
     @Override
+    public void onShow(boolean loading) {
+        mRefreshLayout.setRefreshing(loading);
+    }
+
+    @Override
     public void onShow(List<Task> tasks) {
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mStatusView.setVisibility(View.GONE);
         mTaskAdapter.setItems(tasks);
         mTaskAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onShow(Status status) {
-        int statusType = status.mType;
-        switch (statusType) {
-            case Status.STATUS_TYPE_LOADING:
-                mRefreshLayout.setRefreshing(true);
-                break;
-            case Status.STATUS_TYPE_SUCCESS:
-                mRefreshLayout.setRefreshing(false);
-                mRecyclerView.setVisibility(View.VISIBLE);
-                mStatusView.setVisibility(View.GONE);
-                break;
-            case Status.STATUS_TYPE_EMPTY:
-                mRefreshLayout.setRefreshing(false);
-                mRecyclerView.setVisibility(View.GONE);
-                mStatusView.setVisibility(View.VISIBLE);
-                mStatusIconView.setImageResource(status.mResourceId);
-                mStatusTitleView.setText(status.mMessage);
-                break;
-            case Status.STATUS_TYPE_ERROR:
-                mRefreshLayout.setRefreshing(false);
-                mRecyclerView.setVisibility(View.GONE);
-                mStatusView.setVisibility(View.VISIBLE);
-                mStatusIconView.setImageResource(status.mResourceId);
-                mStatusTitleView.setText(status.mMessage);
-                break;
-        }
+    public void onShow(int statusIcon, int statusMessage) {
+        mRecyclerView.setVisibility(View.GONE);
+        mStatusView.setVisibility(View.VISIBLE);
+        mStatusIconView.setImageResource(statusIcon);
+        mStatusTitleView.setText(statusMessage);
+    }
+
+    @Override
+    public void onShowToast(String message) {
+        Snackbar.make(getView(), message, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onUpdateTask(Task task, int position) {
+        mTaskAdapter.getItems().set(position, task);
+        mTaskAdapter.notifyItemChanged(position);
     }
 
     @Override
     public void onRefresh() {
         mPresenter.refresh();
+    }
+
+    @Override
+    public void onItemClick(View view, int position, int tag) {
+        if (tag == TaskAdapter.TAG_CHECK) {
+            Task task = mTaskAdapter.getItem(position);
+            if(((CheckBox)view).isChecked()) {
+                mPresenter.completeTask(task, position);
+            } else {
+                mPresenter.activateTask(task, position);
+            }
+        } else {
+            //TODO item click to show task details
+        }
+        
     }
 }

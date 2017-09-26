@@ -9,9 +9,9 @@ import java.util.UUID;
 public class Task {
 
     private final String mId;
-    private final String mTitle;
-    private final String mDescription;
-    private final boolean mCompleted;
+    private String mTitle;
+    private String mDescription;
+    private boolean mCompleted;
 
     public Task(String title, String description) {
         this(UUID.randomUUID().toString(), title, description, false);
@@ -30,6 +30,10 @@ public class Task {
 
     public boolean isCompleted() {
         return mCompleted;
+    }
+
+    public void setCompleted(boolean completed) {
+        mCompleted = completed;
     }
 
     public String getTitle() {
