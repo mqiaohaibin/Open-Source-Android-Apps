@@ -11,6 +11,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -21,6 +23,8 @@ import cn.xiaomi.todo.task.TaskFragment;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, MainContract.View {
 
+    private static final String TAG = "MainActivity";
+    
     private MainPresenter mMainPresenter;
 
     private DrawerLayout mDrawerLayout;

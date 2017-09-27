@@ -1,6 +1,7 @@
 package cn.xiaomi.todo.task;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 
@@ -196,4 +197,27 @@ public class TaskPresenter implements TaskContract.Presenter {
         return datas;
     }
 
+    @Override
+    public void detailTask(Task task, int position) {
+        mView.onDetailTask(task, position);
+    }
+
+    @Override
+    public void deleteTask(final Task task, final int position) {
+        mView.onShow(true);
+
+        mDatasource.delete(task, new Datasource.Callback1() {
+            @Override
+            public void success() {
+                mView.onDeleteTask(task, position);
+                mView.onShow(false);
+            }
+
+            @Override
+            public void fail(int code, String error) {
+                mView.onShowToast("删除数据失败");
+                mView.onShow(false);
+            }
+        });
+    }
 }

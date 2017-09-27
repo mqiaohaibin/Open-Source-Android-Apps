@@ -17,13 +17,22 @@
     <string name="action_add">Add</string>
     <string name="action_settings">Settings</string>
 
+    <string name="action_delete">Delete</string>
+
     <!-- task -->
     <string name="task_noTask">You have no TO-DOs!</string>
+    <string name="task_title">TODOs</string>
+
+    <!-- task detail -->
+    <string name="taskDetail_title">TaskDetail</string>
 
     <!-- statistics -->
     <string name="statistics_title">Hello statistics fragment</string>
 
     <!-- error -->
     <string name="error_getData">fail to get data</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

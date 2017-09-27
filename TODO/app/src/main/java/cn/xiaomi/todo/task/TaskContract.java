@@ -1,12 +1,7 @@
 package cn.xiaomi.todo.task;
 
-import android.graphics.Bitmap;
-
-import java.util.List;
-
 import cn.xiaomi.todo.BaseDataView;
 import cn.xiaomi.todo.BasePresenter;
-import cn.xiaomi.todo.Datasource;
 import cn.xiaomi.todo.model.task.Task;
 
 /**
@@ -20,6 +15,10 @@ public interface TaskContract {
         void onShowToast(String message);
 
         void onUpdateTask(Task task, int position);
+
+        void onDetailTask(Task task, int position);
+
+        void onDeleteTask(Task task, int position);
 
     }
 
@@ -36,6 +35,9 @@ public interface TaskContract {
 
         void filter(int type);
         void clearCompletedTask();
+
+        void detailTask(Task task, int position);
+        void deleteTask(Task task, int position);
 
     }
 

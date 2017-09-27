@@ -43,7 +43,6 @@ public class LineItemDecoration extends SpacingItemDecoration {
 
         if (mOrientation == HORIZONTAL) {
             drawHorizontal(canvas, parent, state);
-
         } else {
             drawVertical(canvas, parent, state);
         }

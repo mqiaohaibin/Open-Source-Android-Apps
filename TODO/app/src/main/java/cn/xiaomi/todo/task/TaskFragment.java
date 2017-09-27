@@ -1,7 +1,7 @@
 package cn.xiaomi.todo.task;
 
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -11,12 +11,14 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -56,6 +58,12 @@ public class TaskFragment extends Fragment implements TaskContract.View, View.On
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        getActivity().setTitle(R.string.task_title);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mRefreshLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_task, container, false);
@@ -67,6 +75,8 @@ public class TaskFragment extends Fragment implements TaskContract.View, View.On
         mRecyclerView.addItemDecoration(new LineItemDecoration(spacing, 1));
         mTaskAdapter = new TaskAdapter(null, this);
         mRecyclerView.setAdapter(mTaskAdapter);
+
+        registerForContextMenu(mRecyclerView);
 
         mStatusView = mRefreshLayout.findViewById(R.id.mStatusView);
         mStatusIconView = (ImageView) mStatusView.findViewById(R.id.mStatusIconView);
@@ -119,7 +129,6 @@ public class TaskFragment extends Fragment implements TaskContract.View, View.On
                             case R.id.action_filter_completed:
                                 mPresenter.filter(TaskContract.Presenter.FILTER_TYPE_COMPLETED);
                                 return true;
-
                         }
                         mPresenter.filter(TaskContract.Presenter.FILTER_TYPE_ALL);
                         return true;
@@ -135,17 +144,27 @@ public class TaskFragment extends Fragment implements TaskContract.View, View.On
     }
 
     @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        getActivity().getMenuInflater().inflate(R.menu.action_delete, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_delete) {
+            AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+            mPresenter.deleteTask(mTaskAdapter.getItem(menuInfo.position), menuInfo.position);
+            return true;
+        }
+        return super.onContextItemSelected(item);
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.actionButton:
                 //TODO action click to add a new task
                 break;
         }
-    }
-
-    @Override
-    public Context getContext() {
-        return super.getContext();
     }
 
     @Override
@@ -164,6 +183,7 @@ public class TaskFragment extends Fragment implements TaskContract.View, View.On
         mStatusView.setVisibility(View.GONE);
         mTaskAdapter.setItems(tasks);
         mTaskAdapter.notifyDataSetChanged();
+        registerForContextMenu(mRecyclerView);
     }
 
     @Override
@@ -186,22 +206,81 @@ public class TaskFragment extends Fragment implements TaskContract.View, View.On
     }
 
     @Override
+    public void onDeleteTask(Task task, int position) {
+        mTaskAdapter.getItems().remove(task);
+        mTaskAdapter.notifyItemRemoved(position);
+    }
+
+    @Override
     public void onRefresh() {
         mPresenter.refresh();
     }
 
     @Override
     public void onItemClick(View view, int position, int tag) {
+        Task task = mTaskAdapter.getItem(position);
         if (tag == TaskAdapter.TAG_CHECK) {
-            Task task = mTaskAdapter.getItem(position);
-            if(((CheckBox)view).isChecked()) {
+            if (((CheckBox) view).isChecked()) {
                 mPresenter.completeTask(task, position);
             } else {
                 mPresenter.activateTask(task, position);
             }
         } else {
-            //TODO item click to show task details
+            mPresenter.detailTask(task, position);
         }
-        
+    }
+
+    @Override
+    public void onDetailTask(Task task, int position) {
+        Intent intent = new Intent(getContext(), TaskActivity.class);
+        intent.putExtra(TaskActivity.EXTRA_TASK, task);
+        intent.putExtra(TaskActivity.EXTRA_TYPE, TaskActivity.EXTRA_TYPE_DETAIL);
+        startActivity(intent);
+    }
+
+
+    public static class TaskAdapter extends BaseAdapter<Task, TaskAdapter.ViewHolder> {
+
+        public static final int TAG_CHECK = 1;
+
+        public TaskAdapter(List<Task> items, OnItemClickListener itemClickListener) {
+            super(items, itemClickListener);
+        }
+
+        @Override
+        public TaskAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task, parent, false);
+            return new TaskAdapter.ViewHolder(itemView, mItemClickListener);
+        }
+
+        @Override
+        public void onBindViewHolder(TaskAdapter.ViewHolder holder, int position) {
+            Task task = getItem(position);
+
+            holder.cbCompleted.setChecked(task.isCompleted());
+            holder.tvTitle.setText(task.getTitle());
+        }
+
+        static class ViewHolder extends BaseAdapter.ViewHolder {
+
+            CheckBox cbCompleted;
+            TextView tvTitle;
+
+            public ViewHolder(final View itemView, OnItemClickListener itemClickListener) {
+                super(itemView, itemClickListener);
+
+                cbCompleted = (CheckBox) itemView.findViewById(R.id.cbCompleted);
+                tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
+
+                cbCompleted.setOnClickListener(this);
+            }
+
+            @Override
+            public void onClick(View view) {
+                super.onClick(view);
+                mItemClickListener.onItemClick(cbCompleted, getAdapterPosition(), TAG_CHECK);
+            }
+        }
+
     }
 }

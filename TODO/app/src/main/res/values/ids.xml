@@ -6,4 +6,6 @@
     <item name="mStatusView" type="id" />
     <item name="mStatusTitleView" type="id" />
     <item name="mStatusIconView" type="id" />
+
+    <item name="action_delete" type="id" />
 </resources>

@@ -2,8 +2,6 @@ package cn.xiaomi.library;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.TextView;
 
 import java.util.List;
 
@@ -45,7 +43,6 @@ public abstract class BaseAdapter<T, VH extends RecyclerView.ViewHolder> extends
         return mItems == null ? 0 : mItems.size();
     }
 
-
     public interface OnItemClickListener {
         void onItemClick(View view, int position, int tag);
     }
@@ -54,11 +51,9 @@ public abstract class BaseAdapter<T, VH extends RecyclerView.ViewHolder> extends
 
         protected OnItemClickListener mItemClickListener;
 
-        CheckBox cbCompleted;
-        TextView tvTitle;
-
         public ViewHolder(View itemView, OnItemClickListener itemClickListener) {
             super(itemView);
+            itemView.setLongClickable(true);
             mItemClickListener = itemClickListener;
             if (mItemClickListener != null) {
                 itemView.setOnClickListener(this);
