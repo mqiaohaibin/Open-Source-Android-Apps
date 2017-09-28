@@ -205,7 +205,9 @@ public class TaskFragment extends Fragment implements TaskContract.View, View.On
     @Override
     public void onUpdateTask(Task task, int position) {
         mTaskAdapter.getItems().set(position, task);
-        mTaskAdapter.notifyItemChanged(position);
+        //调用这个方法，会出现一条线(目前没有解决办法)
+        //mTaskAdapter.notifyItemChanged(position);
+        mTaskAdapter.notifyDataSetChanged();
     }
 
     @Override
