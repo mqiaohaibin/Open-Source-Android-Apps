@@ -16,6 +16,7 @@
     <string name="action_refresh">Refresh</string>
     <string name="action_add">Add</string>
     <string name="action_settings">Settings</string>
+    <string name="action_done">Done</string>
 
     <string name="action_delete">Delete</string>
 
@@ -26,13 +27,14 @@
     <!-- task detail -->
     <string name="taskDetail_title">TaskDetail</string>
 
+    <!-- task edit -->
+    <string name="taskEdit_hintTitle">Input title</string>
+    <string name="taskEdit_hintDescription">Input Description</string>
+
     <!-- statistics -->
     <string name="statistics_title">Hello statistics fragment</string>
 
     <!-- error -->
     <string name="error_getData">fail to get data</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -1,13 +1,13 @@
 package cn.xiaomi.todo.task;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Message;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.xiaomi.todo.Constants;
 import cn.xiaomi.todo.Datasource;
 import cn.xiaomi.todo.R;
 import cn.xiaomi.todo.model.task.Task;
@@ -20,23 +20,7 @@ import cn.xiaomi.todo.model.task.TaskRepository;
 
 public class TaskPresenter implements TaskContract.Presenter {
 
-    private final int WHAT_DATAS = 1;
-    private final int WHAT_DATA = 2;
-    private final int WHAT_TOAST = 3;
-
-    private Handler mHandler = new Handler() {
-
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == WHAT_DATAS) {
-                mView.onShow((List<Task>) msg.obj);
-            } else if (msg.what == WHAT_TOAST) {
-                mView.onShowToast((String) msg.obj);
-            } else if (msg.what == WHAT_DATA) {
-                mView.onUpdateTask((Task) msg.obj, msg.arg1);
-            }
-        }
-    };
+    private final int REQUEST_TASK_ADD = 1;
 
     private Context mContext;
     private TaskContract.View mView;
@@ -113,11 +97,11 @@ public class TaskPresenter implements TaskContract.Presenter {
     public void clearCompletedTask() {
         mView.onShow(true);
 
-        mDatasource.clearCompletedTask(new Datasource.Callback<Task>() {
+        mDatasource.clearCompletedTask(new Datasource.Callback1() {
             @Override
-            public void success(List<Task> datas) {
-                mCachedDatas = datas;
-                datas = filter(datas, mCurrentFilterType);
+            public void success() {
+                clearCompletedTask(mCachedDatas);
+                List<Task> datas = filter(mCachedDatas, mCurrentFilterType);
                 if (datas == null || datas.size() == 0) {
                     mView.onShow(R.mipmap.logo, R.string.task_noTask);
                 } else {
@@ -128,12 +112,19 @@ public class TaskPresenter implements TaskContract.Presenter {
 
             @Override
             public void fail(int code, String error) {
-                List<Task> datas = filter(mCachedDatas, mCurrentFilterType);
-                mView.onShow(datas);
                 mView.onShowToast(error);
                 mView.onShow(false);
             }
         });
+    }
+
+    private void clearCompletedTask(List<Task> datas) {
+        for (int i = datas.size() - 1; i >= 0; i--) {
+            Task task = datas.get(i);
+            if (task.isCompleted()) {
+                datas.remove(i);
+            }
+        }
     }
 
     private void load(boolean forceUpdate, final boolean showLoadingUI) {
@@ -209,7 +200,13 @@ public class TaskPresenter implements TaskContract.Presenter {
         mDatasource.delete(task, new Datasource.Callback1() {
             @Override
             public void success() {
-                mView.onDeleteTask(task, position);
+                mCachedDatas.remove(task);
+                List<Task> datas = filter(mCachedDatas, mCurrentFilterType);
+                if (datas == null || datas.size() == 0) {
+                    mView.onShow(R.mipmap.logo, R.string.task_noTask);
+                } else {
+                    mView.onDeleteTask(task, position);
+                }
                 mView.onShow(false);
             }
 
@@ -219,5 +216,22 @@ public class TaskPresenter implements TaskContract.Presenter {
                 mView.onShow(false);
             }
         });
+    }
+
+    @Override
+    public void addTask() {
+        mView.onShowAddTaskForResult(REQUEST_TASK_ADD);
+    }
+
+    @Override
+    public void result(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_TASK_ADD && resultCode == Activity.RESULT_OK) {
+            Task task = data.getParcelableExtra(Constants.Intent.EXTRA_TASK);
+            if (mCachedDatas == null) {
+                mCachedDatas = new ArrayList<>(1);
+            }
+            mCachedDatas.add(0, task);
+            mView.onAddTask(task, 0);
+        }
     }
 }

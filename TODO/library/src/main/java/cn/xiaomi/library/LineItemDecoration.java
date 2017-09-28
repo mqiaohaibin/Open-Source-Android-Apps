@@ -30,6 +30,13 @@ public class LineItemDecoration extends SpacingItemDecoration {
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
     }
 
+    public LineItemDecoration(int spacing, int spanCount, boolean includeEdge) {
+        super(spacing, spanCount, includeEdge);
+        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaint.setColor(Color.LTGRAY);
+        mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+    }
+
     public LineItemDecoration(int spacing, int spanCount, int color, int orientation, boolean includeEdge) {
         super(spacing, spanCount, orientation, includeEdge);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -79,7 +86,7 @@ public class LineItemDecoration extends SpacingItemDecoration {
 
             if (mIncludeEdge && i < mSpanCount) {
                 //top
-                canvas.drawRect(left + mOffsets.left - mSpacing, top + mOffsets.top - mSpacing, right - mOffsets.right + mSpacing , top + mOffsets.top, mPaint);
+                canvas.drawRect(left + mOffsets.left - mSpacing, top + mOffsets.top - mSpacing, right - mOffsets.right + mSpacing, top + mOffsets.top, mPaint);
             }
 
             if (column != mSpanCount - 1 || mIncludeEdge) {
@@ -87,7 +94,7 @@ public class LineItemDecoration extends SpacingItemDecoration {
                 canvas.drawRect(right - mOffsets.right, top + mOffsets.top - mSpacing, right - mOffsets.right + mSpacing, bottom - mOffsets.bottom + mSpacing, mPaint);
             }
 
-            if (i / mSpanCount != childCount / mSpanCount || mIncludeEdge) {
+            if (i / mSpanCount != (childCount - 1) / mSpanCount || mIncludeEdge) {
                 //bottom
                 canvas.drawRect(left + mOffsets.left - mSpacing, bottom - mOffsets.bottom, right - mOffsets.right + mSpacing, bottom - mOffsets.bottom + mSpacing, mPaint);
             }
@@ -125,10 +132,10 @@ public class LineItemDecoration extends SpacingItemDecoration {
 
             if (mIncludeEdge && row == 0) {
                 //top
-                canvas.drawRect(left + mOffsets.left - mSpacing, top + mOffsets.top - mSpacing, right - mOffsets.right + mSpacing , top + mOffsets.top, mPaint);
+                canvas.drawRect(left + mOffsets.left - mSpacing, top + mOffsets.top - mSpacing, right - mOffsets.right + mSpacing, top + mOffsets.top, mPaint);
             }
 
-            if (i / mSpanCount != childCount / mSpanCount || mIncludeEdge) {
+            if (i / mSpanCount != (childCount - 1) / mSpanCount || mIncludeEdge) {
                 //right
                 canvas.drawRect(right - mOffsets.right, top + mOffsets.top - mSpacing, right - mOffsets.right + mSpacing, bottom - mOffsets.bottom + mSpacing, mPaint);
             }

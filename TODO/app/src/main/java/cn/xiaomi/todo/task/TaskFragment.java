@@ -1,6 +1,5 @@
 package cn.xiaomi.todo.task;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -27,7 +27,9 @@ import java.util.List;
 
 import cn.xiaomi.library.BaseAdapter;
 import cn.xiaomi.library.LineItemDecoration;
+import cn.xiaomi.todo.Constants;
 import cn.xiaomi.todo.R;
+import cn.xiaomi.todo.ResultActivity;
 import cn.xiaomi.todo.main.MainActivity;
 import cn.xiaomi.todo.model.task.Task;
 
@@ -72,6 +74,7 @@ public class TaskFragment extends Fragment implements TaskContract.View, View.On
         mRecyclerView = (RecyclerView) mRefreshLayout.findViewById(R.id.mRecyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         int spacing = getResources().getDimensionPixelSize(R.dimen.app_line);
+
         mRecyclerView.addItemDecoration(new LineItemDecoration(spacing, 1));
         mTaskAdapter = new TaskAdapter(null, this);
         mRecyclerView.setAdapter(mTaskAdapter);
@@ -112,7 +115,7 @@ public class TaskFragment extends Fragment implements TaskContract.View, View.On
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                //TODO action click to add a new task
+                mPresenter.addTask();
                 return true;
             case R.id.action_filter:
                 PopupMenu popupMenu = new PopupMenu(getContext(),
@@ -145,7 +148,7 @@ public class TaskFragment extends Fragment implements TaskContract.View, View.On
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        getActivity().getMenuInflater().inflate(R.menu.action_delete, menu);
+        menu.add(Menu.NONE, R.id.action_delete, Menu.NONE, R.string.action_delete);
     }
 
     @Override
@@ -162,7 +165,7 @@ public class TaskFragment extends Fragment implements TaskContract.View, View.On
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.actionButton:
-                //TODO action click to add a new task
+                mPresenter.addTask();
                 break;
         }
     }
@@ -233,11 +236,30 @@ public class TaskFragment extends Fragment implements TaskContract.View, View.On
     @Override
     public void onDetailTask(Task task, int position) {
         Intent intent = new Intent(getContext(), TaskActivity.class);
-        intent.putExtra(TaskActivity.EXTRA_TASK, task);
-        intent.putExtra(TaskActivity.EXTRA_TYPE, TaskActivity.EXTRA_TYPE_DETAIL);
+        intent.putExtra(Constants.Intent.EXTRA_TASK, task);
+        intent.putExtra(Constants.Intent.EXTRA_TYPE, Constants.Intent.EXTRA_TYPE_TASK_DETAIL);
         startActivity(intent);
     }
 
+    @Override
+    public void onShowAddTaskForResult(int requestCode) {
+        Intent intent = new Intent(getContext(), ResultActivity.class);
+        intent.putExtra(Constants.Intent.EXTRA_TYPE, Constants.Intent.EXTRA_TYPE_TASK_ADD);
+        startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void onAddTask(Task task, int position) {
+        mTaskAdapter.getItems().add(position, task);
+        mTaskAdapter.notifyItemInserted(position);
+        mRecyclerView.scrollToPosition(position);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPresenter.result(requestCode, resultCode, data);
+    }
 
     public static class TaskAdapter extends BaseAdapter<Task, TaskAdapter.ViewHolder> {
 

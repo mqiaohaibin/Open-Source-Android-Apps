@@ -29,7 +29,4 @@ public class TaskDetailPresenter implements BasePresenter {
 
     }
 
-
-
-
 }

@@ -8,7 +8,7 @@ import cn.xiaomi.todo.Datasource;
 
 public interface TaskDatabase extends Datasource<Task>{
 
-    void clearCompletedTask(Callback<Task> callback);
+    void clearCompletedTask(Callback1 callback);
 
     void activeTask(Task task, Callback<Task> callback);
 

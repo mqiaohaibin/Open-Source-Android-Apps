@@ -16,8 +16,8 @@ public class Task implements Parcelable{
     private String mDescription;
     private boolean mCompleted;
 
-    public Task(String title, String description) {
-        this(UUID.randomUUID().toString(), title, description, false);
+    public Task(String title, String description, boolean completed) {
+        this(UUID.randomUUID().toString(), title, description, completed);
     }
 
     public Task(String id, String title, String description, boolean completed) {

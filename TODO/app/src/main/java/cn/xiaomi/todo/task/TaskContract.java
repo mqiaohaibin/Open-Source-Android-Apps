@@ -1,5 +1,7 @@
 package cn.xiaomi.todo.task;
 
+import android.content.Intent;
+
 import cn.xiaomi.todo.BaseDataView;
 import cn.xiaomi.todo.BasePresenter;
 import cn.xiaomi.todo.model.task.Task;
@@ -20,6 +22,10 @@ public interface TaskContract {
 
         void onDeleteTask(Task task, int position);
 
+        void onAddTask(Task task, int position);
+
+        void onShowAddTaskForResult(int requestCode);
+
     }
 
     interface Presenter extends BasePresenter {
@@ -38,6 +44,9 @@ public interface TaskContract {
 
         void detailTask(Task task, int position);
         void deleteTask(Task task, int position);
+
+        void addTask();
+        void result(int requestCode, int resultCode, Intent data);
 
     }
 

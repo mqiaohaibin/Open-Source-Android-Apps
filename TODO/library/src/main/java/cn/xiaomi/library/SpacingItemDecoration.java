@@ -20,7 +20,11 @@ public class SpacingItemDecoration extends RecyclerView.ItemDecoration {
     protected boolean mIncludeEdge;
 
     public SpacingItemDecoration(int spacing, int spanCount) {
-        this(spacing, spanCount, VERTICAL, false);
+        this(spacing, spanCount, false);
+    }
+
+    public SpacingItemDecoration(int spacing, int spanCount, boolean includeEdge) {
+        this(spacing, spanCount, VERTICAL, includeEdge);
     }
 
     public SpacingItemDecoration(int spacing, int spanCount, int orientation, boolean includeEdge) {

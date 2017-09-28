@@ -8,4 +8,5 @@
     <item name="mStatusIconView" type="id" />
 
     <item name="action_delete" type="id" />
+    <item name="action_done" type="id" />
 </resources>

@@ -49,7 +49,7 @@ public class TaskRepository implements TaskDatabase {
     public void delete(Task data, Callback1 callback) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-        String whereClause = TaskDbContract.TaskEntry.COLUMN_NAME_COMPLETED + "=?";
+        String whereClause = TaskDbContract.TaskEntry.COLUMN_NAME_ENTRY_ID + "=?";
         String[] whereArgs = {data.getId()};
 
         int result = db.delete(TaskDbContract.TaskEntry.TABLE_NAME, whereClause, whereArgs);
@@ -59,18 +59,14 @@ public class TaskRepository implements TaskDatabase {
     }
 
     @Override
-    public void clearCompletedTask(Callback<Task> callback) {
+    public void clearCompletedTask(Callback1 callback) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         String whereClause = TaskDbContract.TaskEntry.COLUMN_NAME_COMPLETED + "=?";
         String[] whereArgs = {"1"};
 
         int result = db.delete(TaskDbContract.TaskEntry.TABLE_NAME, whereClause, whereArgs);
-        if (result != 0) {
-            load(0, 0, callback);
-        } else if (callback != null) {
-            callback.fail(-1, "删除失败");
-        }
+        dealCallback1(callback, result != 0, "删除失败");
 
         db.close();
     }
@@ -132,7 +128,7 @@ public class TaskRepository implements TaskDatabase {
         Cursor cursor = db.rawQuery(sql, null);
 
         if (cursor != null) {
-            List<Task> datas;
+            List<Task> datas = null;
             if (cursor.getCount() > 0) {
                 datas = new ArrayList<>(cursor.getCount());
                 while (cursor.moveToNext()) {

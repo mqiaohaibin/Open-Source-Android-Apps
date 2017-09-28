@@ -6,4 +6,6 @@
     <dimen name="app_line">1dp</dimen>
     <dimen name="app_line_extreme_small">1px</dimen>
 
+    <dimen name="app_edittext_height">45dp</dimen>
+
 </resources>
