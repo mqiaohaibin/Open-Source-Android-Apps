@@ -158,4 +158,34 @@ public class TaskRepository implements TaskDatabase {
 
         db.close();
     }
+
+    @Override
+    public void taskCounts(Callback<Integer> callback) {
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+        List<Integer> taskCounts = new ArrayList<>(2);
+        taskCounts.add(0, 0);
+        taskCounts.add(1, 1);
+
+        for (Integer value:taskCounts) {
+            String sql = "select COUNT(*)" + "from " + TaskDbContract.TaskEntry.TABLE_NAME +
+                    " where " + TaskDbContract.TaskEntry.COLUMN_NAME_COMPLETED + "=" + value;
+            Cursor cursor = db.rawQuery(sql, null);
+            int tempCount = 0;
+            if (cursor.getCount() == 1 && cursor.moveToNext()) {
+                tempCount = cursor.getInt(0);
+            }
+            taskCounts.set(value, tempCount);
+
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        if (callback != null) {
+            callback.success(taskCounts);
+        }
+
+        db.close();
+    }
 }

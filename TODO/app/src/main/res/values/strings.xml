@@ -32,7 +32,10 @@
     <string name="taskEdit_hintDescription">Input Description</string>
 
     <!-- statistics -->
-    <string name="statistics_title">Hello statistics fragment</string>
+    <string name="statistics_title">Statistics</string>
+    <string name="statistics_noTask">You have no tasks!</string>
+    <string name="statistics_activeTaskLabel">Active tasks:</string>
+    <string name="statistics_completedTaskLabel">Completed tasks:</string>
 
     <!-- error -->
     <string name="error_getData">fail to get data</string>

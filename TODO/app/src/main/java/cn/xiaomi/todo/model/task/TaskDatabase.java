@@ -12,4 +12,6 @@ public interface TaskDatabase extends Datasource<Task>{
 
     void activeTask(Task task, Callback<Task> callback);
 
+    void taskCounts(Callback<Integer> callback);
+
 }

@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment;
         switch (actionType) {
             case MAIN_ACTION_TYPE_STATISTICS:
-                fragment = new StatisticsFragment();
+                fragment = StatisticsFragment.newInstance();
                 break;
             case MAIN_ACTION_TYPE_LIST:
             default:
