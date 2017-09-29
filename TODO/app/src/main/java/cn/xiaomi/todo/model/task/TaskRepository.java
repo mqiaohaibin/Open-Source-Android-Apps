@@ -138,11 +138,6 @@ public class TaskRepository implements TaskDatabase {
                     boolean completed = cursor.getInt(cursor.getColumnIndex(TaskDbContract.TaskEntry.COLUMN_NAME_COMPLETED)) == 1;
                     datas.add(new Task(entryId, title, description, completed));
                 }
-            } else {
-                datas = new ArrayList<>(50);
-                for (int i = 0; i < 50; i++) {
-                    datas.add(new Task(i + "", "title" + i, "description" + i, i % 2 == 1));
-                }
             }
 
             if (callback != null) {

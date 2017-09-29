@@ -136,6 +136,8 @@ public class TaskPresenter implements TaskContract.Presenter {
             List<Task> datas = filter(mCachedDatas, mCurrentFilterType);
             if (datas != null && datas.size() > 0) {
                 mView.onShow(datas);
+            } else {
+                mView.onShow(R.mipmap.logo, R.string.task_noTask);
             }
 
             if (showLoadingUI) {
@@ -229,9 +231,20 @@ public class TaskPresenter implements TaskContract.Presenter {
             Task task = data.getParcelableExtra(Constants.Intent.EXTRA_TASK);
             if (mCachedDatas == null) {
                 mCachedDatas = new ArrayList<>(1);
+                mCachedDatas.add(0, task);
+                List<Task> datas = filter(mCachedDatas, mCurrentFilterType);
+                if (datas != null && datas.size() == 1) {
+                    mView.onShow(datas);
+                }
+            } else {
+                mCachedDatas.add(0, task);
+                List<Task> datas = new ArrayList<>(1);
+                datas.add(task);
+                datas = filter(datas, mCurrentFilterType);
+                if (datas != null && datas.size() == 1) {
+                    mView.onAddTask(task, 0);
+                }
             }
-            mCachedDatas.add(0, task);
-            mView.onAddTask(task, 0);
         }
     }
 }
