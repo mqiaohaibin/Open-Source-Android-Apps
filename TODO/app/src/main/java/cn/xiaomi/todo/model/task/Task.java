@@ -47,7 +47,6 @@ public class Task implements Parcelable{
         return mDescription;
     }
 
-
     public static final  Parcelable.Creator<Task> CREATOR = new Creator<Task>() {
         @Override
         public Task createFromParcel(Parcel source) {
@@ -75,6 +74,5 @@ public class Task implements Parcelable{
         dest.writeString(mTitle);
         dest.writeString(mDescription);
         dest.writeByte((byte) (mCompleted ? 1 : 0));
-
     }
 }

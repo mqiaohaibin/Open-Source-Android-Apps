@@ -6,7 +6,6 @@ package cn.xiaomi.todo;
 
 public final class Constants {
 
-
     public static final class Intent {
 
         public static final String EXTRA_TASK = "cn.xiaomi.todo.EXTRA_TASK";
@@ -17,6 +16,5 @@ public final class Constants {
         public static final int EXTRA_TYPE_TASK_ADD = 2;
 
     }
-
 
 }

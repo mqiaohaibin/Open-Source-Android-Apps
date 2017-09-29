@@ -1,13 +1,11 @@
 package cn.xiaomi.todo;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
-import cn.xiaomi.todo.model.task.Task;
-import cn.xiaomi.todo.task.TaskDetailFragment;
 import cn.xiaomi.todo.task.TaskEditFragment;
 
 public class ResultActivity extends AppCompatActivity {
@@ -19,7 +17,6 @@ public class ResultActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        Task task = getIntent().getParcelableExtra(Constants.Intent.EXTRA_TASK);
         int taskType = getIntent().getIntExtra(Constants.Intent.EXTRA_TYPE, Constants.Intent.EXTRA_TYPE_NULL);
 
         Fragment fragment = null;
