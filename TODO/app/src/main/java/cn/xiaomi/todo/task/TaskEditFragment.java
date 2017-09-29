@@ -61,9 +61,8 @@ public class TaskEditFragment extends Fragment implements TaskEditPresenter.View
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         mPresenter = new TaskEditPresenter(this, true);
-
-
         mPresenter.start();
+
         return view;
     }
 
@@ -76,12 +75,6 @@ public class TaskEditFragment extends Fragment implements TaskEditPresenter.View
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_done) {
-            View view = getView().findFocus();
-            InputMethodManager manager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            manager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
-
-
-
             String title = etTitle.getText().toString();
             String description = etDescription.getText().toString();
             boolean completed = cbCompleted.isChecked();

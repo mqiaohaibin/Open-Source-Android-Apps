@@ -25,16 +25,13 @@ public class TaskEditPresenter implements BasePresenter{
     }
 
     @Override
-    public void start() {
-
-    }
+    public void start() {}
 
     public void addTask(String title, String description, boolean completed) {
         final Task task = new Task(title, description, completed);
         mTaskDatabase.insert(task, new Datasource.Callback1() {
             @Override
             public void success() {
-//                mView.onShow("添加成功");
                 mView.onBack(task);
             }
 
